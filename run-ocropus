@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo docker.io run -v `pwd`:/work ocropy /ocropus/ocropy/ocropus-rpred "$@"
