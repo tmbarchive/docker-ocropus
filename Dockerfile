@@ -10,6 +10,7 @@ RUN apt-get clean && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 RUN git clone https://github.com/tmbdev/ocropy.git
 RUN (cd ocropy/models && curl -O http://www.tmbdev.net/en-default.pyrnn.gz)
+RUN (cd ocropy/models && curl -O http://www.tmbdev.net/ocropy/fraktur.pyrnn.gz)
 RUN (cd ocropy && sudo python setup.py install)
 ADD ocrotrain.sh ocropy/ocrotrain.sh
 VOLUME /work
