@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Must contain trailing and preceding spaces for the allowed command test
+ALLOWED_COMMANDS=" dewarp econf errs gpageseg gtedit hocr linegen lpred ltrain nlbin rpred rtrain results "
+DOCKER_IMAGE=${DOCKER_IMAGE:-kbai/ocropy}
+WORKING_DIR="$PWD"
+
+help() {
+    echo "$0 [--help] [--sudo] [--image <image-name>] [--working-dir <working-dir>] <cmd> [args...]"
+    echo ""
+    if [[ -n "$1" ]];then
+        printf "!!\n!! %s\n!!\n\n" "$1"
+    fi
+    echo "  --sudo                      Run as sudo"
+    echo "  --image <image-name>        Use this image (Default: $DOCKER_IMAGE)"
+    echo "  --working-dir <working-dir> Mount this dir (Default: $WORKING_DIR)"
+    echo "  <cmd>                       Execute this ocropy-<cmd> command"
+    echo "  [args...]                   Depend on the command. See ocropy docs."
+    echo ""
+    echo "Commands: $ALLOWED_COMMANDS"
+    if [[ -z "$1" ]];then
+        exit 0
+    else
+        exit 1
+    fi
+}
+
+#
+# Parse options
+#
+while [[ $1 =~ ^-- ]];do
+    case "$1" in
+        --image)
+            DOCKER_IMAGE=$2
+            shift;shift;
+            ;;
+        --working-dir)
+            WORKING_DIR=$2
+            shift;shift;
+            ;;
+        --sudo)
+            SUDO="sudo"
+            shift;
+            ;;
+        --help)
+            shift;
+            help
+            ;;
+        *)
+            help "Unknown Option: $1"
+            ;;
+    esac
+done
+
+#
+# Command
+#
+CMD=$1
+shift
+if [[ -z "$CMD" ]];then
+    help 'Must pass <cmd>'
+elif [[ $ALLOWED_COMMANDS != *\ $CMD\ * ]];then
+    help "Unknown command '$CMD'. Allowed: $ALLOWED_COMMANDS"
+fi
+
+$SUDO docker run -v "$WORKING_DIR:/work" "$DOCKER_IMAGE" "/ocropy/ocropus-$CMD" "$@"
