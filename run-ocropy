@@ -1,7 +1,22 @@
 #!/bin/bash
 
-# Must contain trailing and preceding spaces for the allowed command test
-ALLOWED_COMMANDS=" dewarp econf errs gpageseg gtedit hocr linegen lpred ltrain nlbin rpred rtrain results visualize-results "
+typeset -A ALLOWED_COMMANDS
+
+
+ALLOWED_COMMANDS[dewarp]="dewarp lines as used for the recognizer"
+ALLOWED_COMMANDS[econf]="Compute the edit distances between ground truth and recognizer output"
+ALLOWED_COMMANDS[errs]="Compute the edit distances between ground truth and recognizer output"
+ALLOWED_COMMANDS[gpageseg]="Segment a page"
+ALLOWED_COMMANDS[gtedit]="Edit ground truth"
+ALLOWED_COMMANDS[hocr]="Construct an HTML output file in hOCR format"
+ALLOWED_COMMANDS[linegen]="Generate text line training data"
+ALLOWED_COMMANDS[lpred]="run an RNN recognizer"
+ALLOWED_COMMANDS[ltrain]="train an RNN recognizer"
+ALLOWED_COMMANDS[nlbin]="Image binarization using non-linear processing"
+ALLOWED_COMMANDS[rpred]="apply an RNN recognizer"
+ALLOWED_COMMANDS[rtrain]="train an RNN recognizer"
+ALLOWED_COMMANDS[visualize-results]="Generate HTML for debugging a book directory"
+
 DOCKER_IMAGE=${DOCKER_IMAGE:-kbai/ocropy}
 WORKING_DIR="$PWD"
 
@@ -9,15 +24,19 @@ help() {
     echo "$0 [--help] [--sudo] [--image <image-name>] [--working-dir <working-dir>] <cmd> [args...]"
     echo ""
     if [[ -n "$1" ]];then
-        printf "!!\n!! %s\n!!\n\n" "$1"
+        printf "!! %s !!\n\n" "$1"
     fi
+    echo "Options:"
     echo "  --sudo                      Run as sudo"
     echo "  --image <image-name>        Use this image (Default: $DOCKER_IMAGE)"
     echo "  --working-dir <working-dir> Mount this dir (Default: $WORKING_DIR)"
     echo "  <cmd>                       Execute this ocropy-<cmd> command"
     echo "  [args...]                   Depend on the command. See ocropy docs."
     echo ""
-    echo "Commands: $ALLOWED_COMMANDS"
+    echo "Commands:"
+    for cmd in "${!ALLOWED_COMMANDS[@]}";do
+        echo -e "  * $cmd\t- ${ALLOWED_COMMANDS[$cmd]}"
+    done
     if [[ -z "$1" ]];then
         exit 0
     else
@@ -59,8 +78,8 @@ CMD=$1
 shift
 if [[ -z "$CMD" ]];then
     help 'Must pass <cmd>'
-elif [[ $ALLOWED_COMMANDS != *\ $CMD\ * ]];then
-    help "Unknown command '$CMD'. Allowed: $ALLOWED_COMMANDS"
+elif [[ -z "${ALLOWED_COMMANDS[$CMD]}" ]];then
+    help "Unknown command '$CMD'. Allowed: ${!ALLOWED_COMMANDS[*]}"
 fi
 
-$SUDO docker run -v "$WORKING_DIR:/work" "$DOCKER_IMAGE" "/ocropy/ocropus-$CMD" "$@"
+$SUDO docker run --rm -v "$WORKING_DIR:/work" "$DOCKER_IMAGE" "/ocropy/ocropus-$CMD" "$@"
