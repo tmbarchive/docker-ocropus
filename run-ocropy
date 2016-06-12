@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Must contain trailing and preceding spaces for the allowed command test
-ALLOWED_COMMANDS=" dewarp econf errs gpageseg gtedit hocr linegen lpred ltrain nlbin rpred rtrain results "
+ALLOWED_COMMANDS=" dewarp econf errs gpageseg gtedit hocr linegen lpred ltrain nlbin rpred rtrain results visualize-results "
 DOCKER_IMAGE=${DOCKER_IMAGE:-kbai/ocropy}
 WORKING_DIR="$PWD"
 
