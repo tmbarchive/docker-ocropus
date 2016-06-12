@@ -49,26 +49,13 @@ help() {
 #
 while [[ $1 =~ ^-- ]];do
     case "$1" in
-        --image)
-            DOCKER_IMAGE=$2
-            shift;shift;
-            ;;
-        --working-dir)
-            WORKING_DIR=$2
-            shift;shift;
-            ;;
-        --sudo)
-            SUDO="sudo"
-            shift;
-            ;;
-        --help)
-            shift;
-            help
-            ;;
-        *)
-            help "Unknown Option: $1"
-            ;;
+        --image) DOCKER_IMAGE=$2; shift ;;
+        --working-dir) WORKING_DIR=$2; shift ;;
+        --sudo) SUDO="sudo" ;;
+        --help) help ;;
+        *) help "Unknown Option: $1" ;;
     esac
+    shift;
 done
 
 #
