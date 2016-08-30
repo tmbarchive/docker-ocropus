@@ -1,7 +1,8 @@
 docker-ocropy
 =============
+[ocropy](https://github.com/tmbdev/ocropy) in a Docker container.
 
-> [ocropy](https://github.com/tmbdev/ocropy) in a Docker container.
+[![Docker Automated buil](https://img.shields.io/docker/automated/kbai/ocropy.svg?maxAge=2592000)](https://hub.docker.com/r/kbai/ocropy/) [![Docker Pulls](https://img.shields.io/docker/pulls/kbai/ocropy.svg?maxAge=2592000)]()
 
 This is a simple way of getting an ocropy OCR system installed.
 
@@ -38,6 +39,19 @@ This will:
 See the Docker documentation to see how you need to use the -v flag and other flags.
 
 You can also do training and all the other operations you'd normally run with an ocropy installation.
+
+## Models
+
+By default, docker-ocropy ships with the models
+[ocropy/en-default](https://data.bib.uni-mannheim/json/ocropy/en-default) and
+[ocropy/fraktur](https://data.bib.uni-mannheim/json/ocropy/fraktur). These are found in
+`/ocropy/models`, i.e. use
+
+```sh
+docker run --rm -it kbai/ocropy ocropus-rpred -m en-default.pyrnn.gz ...
+# or
+docker run --rm -it kbai/ocropy ocropus-rpred -m /ocropy/models/en-default.pyrnn.gz ...
+```
 
 ## Train it
 

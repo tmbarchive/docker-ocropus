@@ -69,4 +69,4 @@ elif [[ -z "${ALLOWED_COMMANDS[$CMD]}" ]];then
     help "Unknown command '$CMD'. Allowed: ${!ALLOWED_COMMANDS[*]}"
 fi
 
-$SUDO docker run --rm -v "$WORKING_DIR:/work" "$DOCKER_IMAGE" "/ocropy/ocropus-$CMD" "$@"
+$SUDO docker run --rm -v "$WORKING_DIR:/work" "$DOCKER_IMAGE" "ocropus-$CMD" "$@"
