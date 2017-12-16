@@ -1,0 +1,6 @@
+[submodule "ocropy"]
+	path = ocropy
+	url = https://github.com/tmbdev/ocropy
+[submodule "ocr-models-client"]
+	path = ocr-models-client
+	url = https://github.com/kba/ocr-models-client

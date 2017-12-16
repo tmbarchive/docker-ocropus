@@ -1,16 +1,18 @@
-FROM ubuntu:14.04
-MAINTAINER Tom <tmbdev@gmail.com>
+FROM ubuntu:16.04
+MAINTAINER Konstantin Baierer <konstantin.baierer@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
+ENV PYTHONIOENCODING utf8
 
-RUN apt-get -qq update
-RUN apt-get -qq dist-upgrade
-RUN apt-get -qqy install build-essential g++ gdb swig2.0 mercurial scons
-RUN apt-get -qqy install curl python-scipy python-matplotlib python-tables firefox imagemagick python-opencv python-bs4 git
-RUN apt-get clean && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-RUN git clone https://github.com/tmbdev/ocropy.git
-RUN (cd ocropy/models && curl -O http://www.tmbdev.net/en-default.pyrnn.gz)
-RUN (cd ocropy && sudo python setup.py install)
-ADD ocrotrain.sh ocropy/ocrotrain.sh
-VOLUME /work
+ADD ocropy /ocropy
+ADD ocr-models-client /ocr-models-client
 WORKDIR /work
+ADD ocrotrain.sh /ocropy/ocrotrain.sh
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends git ca-certificates wget unzip && \
+    cd /ocropy && \
+        /ocr-models-client/ocr-models download -d models 'ocropy/en-default' 'ocropy/fraktur' && \
+        apt-get install -y $(cat PACKAGES) && \
+        python setup.py install && \
+        apt-get -y remove --purge --auto-remove git wget unzip && \
+        apt-get clean && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* .git
+VOLUME /work
